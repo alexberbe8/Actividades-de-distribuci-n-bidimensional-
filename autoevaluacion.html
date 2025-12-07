@@ -554,11 +554,11 @@
       <div style="display:flex; flex-wrap:wrap; gap:18px; margin-top:10px;">
         <div>
           <p>Covarianza cov(X,Y):</p>
-          <div id="drop_cov" class="dropzone" data-value="">Arrastrá aquí</div>
+          <div id="drop_cov" class="dropzone" data-value="">Seleccioná aquí</div>
         </div>
         <div>
           <p>Coeficiente de correlación r:</p>
-          <div id="drop_r" class="dropzone" data-value="">Arrastrá aquí</div>
+          <div id="drop_r" class="dropzone" data-value="">Seleccioná aquí</div>
         </div>
       </div>
 
@@ -860,7 +860,7 @@
     if (rVal)   rZone.style.backgroundColor   = okR   ? '#c8f7c5' : '#f7c5c5';
 
     if (!covVal && !rVal) {
-      fb.textContent = "✘ Primero arrastrá los valores a cada casillero.";
+      fb.textContent = "✘ Primero colocá los valores en cada casillero.";
       fb.className = "feedback incorrect";
     } else if (okCov && okR) {
       fb.textContent = "✔ Correcto. Identificaste adecuadamente la covarianza y el coeficiente de correlación lineal.";
@@ -1063,7 +1063,7 @@
     });
 
     document.querySelectorAll('.dropzone').forEach(z => {
-      z.textContent = "Arrastrá aquí";
+      z.textContent = "Seleccioná aquí";
       z.dataset.value = "";
       z.style.backgroundColor = "#fafafa";
       z.classList.remove('filled');
@@ -1162,3 +1162,4 @@
 </script>
 </body>
 </html>
+
