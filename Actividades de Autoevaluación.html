@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+ <meta charset="UTF-8">
+  <title>Distribuciones bidimensionales</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    header {
+      background: #E65C00;
+      color: white;
+      padding: 16px 24px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 600;
+    }
+    main {
+      max-width: 1000px;
+      margin: 28px auto 40px auto;
+      padding: 0 12px;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 16px 20px;
+      margin-bottom: 18px;
+    }
+    .card h2 {
+      margin-top: 0;
+      color: #FF6A00;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card h2 span.icon {
+      font-size: 1.3rem;
+    }
+    .card p {
+      margin: 6px 0;
+    }
+
+    p {
+      line-height: 1.6;
+    }
+
+    ul li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      background: #FFF4C2;
+      color: #8a6d00;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .pill-blue {
+      background: #E7F1FF;
+      color: #0b4f8a;
+    }
+    .options {
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+   .options label {
+  display: block;
+  margin-bottom: 4px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.options label:hover {
+  background-color: #f0f0f0;   /* un gris suave */
+  transform: translateX(2px);  /* opcional: pequeño desplazamiento */
+}
+    button {
+      background: #FF6A00;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 14px;
+      cursor: pointer;
+      margin-top: 6px;
+      font-size: 0.9rem;
+    }
+    button:hover {
+      background: #e45f00;
+    }
+    .feedback {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .correct {
+      color: #1b8a00;
+    }
+    .incorrect {
+      color: #b00020;
+    }
+    input[type="text"], input[type="number"] {
+      padding: 3px 6px;
+      margin: 0 2px;
+      width: 90px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .svg-box {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 6px;
+      margin: 8px 0;
+      background: #fafafa;
+      text-align: center;
+    }
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Bloques de texto inicial y final */
+    .text {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 26px 28px;
+      margin: 34px auto 34px auto;
+      max-width: 800px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border-left: 4px solid #FF6A00;
+    }
+
+    .text h2 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      font-size: 1.45rem;
+      color: #333333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+
+    .text h2 .icon {
+      font-size: 1.6rem;
+    }
+
+    .text p,
+    .text ul {
+      line-height: 1.7;
+      font-size: 1.12rem;
+      color: #333333;
+    }
+
+    .text ul {
+      padding-left: 1.4rem;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .text ul li {
+      margin-bottom: 8px;
+    }
+
+    /* Bloque final oculto al inicio */
+    #finalBlock {
+      display: none;
+    }
+
+    /* Contenedor botones resultado */
+    .score-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    /* Actividad 11: drag & drop */
+    .drag-item {
+      display: inline-block;
+      padding: 4px 10px;
+      margin: 2px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #ffffff;
+      cursor: grab;
+      user-select: none;
+      font-size: 0.95rem;
+    }
+.drag-item.selected {
+  border-color: #FF6A00;
+  box-shadow: 0 0 0 2px rgba(255,106,0,0.25);
+}
+.dropzone:hover {
+  background-color: #f0f0f0;
+  border-color: #FF6A00;
+}
+    .drag-item.dragging {
+      opacity: 0.6;
+    }
+   .dropzone {
+  min-width: 100px;
+  min-height: 32px;
+  border-radius: 6px;
+  border: 1px dashed #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background: #fafafa;
+  font-size: 0.95rem;
+  cursor: pointer;  /* <- nuevo */
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+    .dropzone.filled {
+      border-style: solid;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1 style="margin:0;">Distribuciones bidimensionales</h1>
+        <span style="font-style:italic; font-size:1rem; color:white; margin-left:12px;">
+            Prof. Alexandra Berberian
+        </span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Introducción -->
+    <section class="text">
+      <h2><span class="icon">🎓</span>Hola a tod@s</h2>
+      <p>
+        En esta autoevaluación repasarás los conceptos centrales de las
+        <strong>distribuciones bidimensionales</strong>:
+      </p>
+      <ul>
+        <li>Si alguna respuesta no es la que esperabas, podés volver a intentar todas las veces que quieras.</li>
+        <li>Las casillas en verde indican respuestas correctas; las casillas en rojo, las que necesitás revisar.</li>
+        <li>Cada actividad tiene <strong>corrección automática</strong> y
+            <strong>retroalimentación inmediata</strong>.</li>
+        <li>Es una evaluación <strong>formativa</strong>: su único objetivo es ayudarte a estudiar.</li>
+      </ul>
+      <p>
+        <strong>¡Ánimo!</strong> Si llegaste hasta aquí, ya avanzaste un montón en el estudio de las
+        <strong>distribuciones bidimensionales</strong> 💪.
+      </p>
+    </section>
+
+    <!-- ACT 1 -->
+    <section class="card" id="act1">
+      <span class="pill">Conceptos básicos</span>
+      <h2><span class="icon">📘</span>Actividad 1 – ¿Qué tipo de distribución es?</h2>
+      <p>
+        En un estudio se mide, para cada persona, la
+        <strong>frecuencia cardíaca en reposo (X)</strong> y la
+        <strong>presión arterial sistólica (Y)</strong>.
+      </p>
+      <p>¿Qué tipo de distribución se está estudiando?</p>
+      <div class="options">
+        <label><input type="radio" name="act1" value="a"> a) Distribución unidimensional</label>
+        <label><input type="radio" name="act1" value="b"> b) Distribución bidimensional</label>
+        <label><input type="radio" name="act1" value="c"> c) Distribución cualitativa</label>
+        <label><input type="radio" name="act1" value="d"> d) Distribución discreta de una sola variable</label>
+      </div>
+      <div id="fb1" class="feedback"></div>
+    </section>
+
+    <!-- ACT 2 -->
+    <section class="card" id="act2">
+      <span class="pill">Conceptos básicos</span>
+      <h2><span class="icon">📘</span>Actividad 2 – Variables </h2>
+      <p>
+        En un estudio se analiza la relación entre la
+        <strong>dosis de un fármaco (X)</strong> y la
+        <strong>concentración en sangre del fármaco (Y)</strong>.
+      </p>
+      <p>¿Cuál es la interpretación correcta?</p>
+      <div class="options">
+        <label><input type="radio" name="act2" value="a"> a) X es dependiente y Y es independiente.</label>
+        <label><input type="radio" name="act2" value="b"> b) Ambas son dependientes.</label>
+        <label><input type="radio" name="act2" value="c"> c) X es independiente y Y es dependiente.</label>
+        <label><input type="radio" name="act2" value="d"> d) No se puede definir.</label>
+      </div>
+      <div id="fb2" class="feedback"></div>
+    </section>
+
+    <!-- ACT 3 -->
+    <section class="card" id="act3">
+      <span class="pill">Nube de puntos</span>
+      <h2><span class="icon">📊</span>Actividad 3</h2>
+      <p>
+        Observá la siguiente nube de puntos, donde X podría representar
+        <strong>tiempo de ejercicio</strong> y Y el
+        <strong>consumo de oxígeno</strong>:
+      </p>
+      <div class="svg-box">
+        <svg width="260" height="180" viewBox="0 0 260 180">
+          <!-- Ejes -->
+          <line x1="40" y1="140" x2="230" y2="140" stroke="#777" stroke-width="1"/>
+          <line x1="40" y1="140" x2="40" y2="30"  stroke="#777" stroke-width="1"/>
+          <!-- Etiquetas -->
+          <text x="140" y="160" font-size="12" fill="#333">X</text>
+          <text x="22" y="90" font-size="12" fill="#333" transform="rotate(0, 22,90)">Y</text>
+          <!-- Puntos -->
+          <circle cx="55"  cy="128" r="3" fill="#1976d2"/>
+          <circle cx="60"  cy="118" r="3" fill="#1976d2"/>
+          <circle cx="70"  cy="132" r="3" fill="#1976d2"/>
+          <circle cx="80"  cy="122" r="3" fill="#1976d2"/>
+          <circle cx="92"  cy="105" r="3" fill="#1976d2"/>
+          <circle cx="100" cy="122" r="3" fill="#1976d2"/>
+          <circle cx="112" cy="98"  r="3" fill="#1976d2"/>
+          <circle cx="125" cy="87"  r="3" fill="#1976d2"/>
+          <circle cx="135" cy="100" r="3" fill="#1976d2"/>
+          <circle cx="148" cy="82"  r="3" fill="#1976d2"/>
+          <circle cx="160" cy="75"  r="3" fill="#1976d2"/>
+          <circle cx="172" cy="90"  r="3" fill="#1976d2"/>
+          <circle cx="185" cy="70"  r="3" fill="#1976d2"/>
+          <circle cx="198" cy="60"  r="3" fill="#1976d2"/>
+          <circle cx="210" cy="80"  r="3" fill="#1976d2"/>
+        </svg>
+      </div>
+      <p>¿Cómo describir la relación entre X y Y?</p>
+      <div class="options">
+        <label><input type="radio" name="act3" value="a"> a) Correlación negativa.</label>
+        <label><input type="radio" name="act3" value="b"> b) Correlación positiva.</label>
+        <label><input type="radio" name="act3" value="c"> c) Correlación nula.</label>
+        <label><input type="radio" name="act3" value="d"> d) No es posible interpretar nada.</label>
+      </div>
+      <div id="fb3" class="feedback"></div>
+    </section>
+
+    <!-- ACT 4 -->
+    <section class="card" id="act4">
+      <span class="pill">Nube de puntos</span>
+      <h2><span class="icon">📊</span>Actividad 4</h2>
+      <p>
+        Observa la siguiente nube de puntos, donde X podría representar
+        <strong>horas de sueño</strong> y Y el
+        <strong>nivel de cortisol</strong>:
+      </p>
+      <div class="svg-box">
+        <svg width="260" height="180" viewBox="0 0 260 180">
+          <!-- Ejes -->
+          <line x1="40" y1="140" x2="230" y2="140" stroke="#777" stroke-width="1"/>
+          <line x1="40" y1="140" x2="40" y2="30"  stroke="#777" stroke-width="1"/>
+          <!-- Etiquetas -->
+          <text x="140" y="160" font-size="12" fill="#333">X</text>
+          <text x="22" y="90" font-size="12" fill="#333" transform="rotate(0 22,90)">Y</text>
+          <!-- Puntos -->
+          <circle cx="55"  cy="70"  r="3" fill="#c62828"/>
+          <circle cx="65"  cy="80"  r="3" fill="#c62828"/>
+          <circle cx="75"  cy="60"  r="3" fill="#c62828"/>
+          <circle cx="88"  cy="90"  r="3" fill="#c62828"/>
+          <circle cx="100" cy="95"  r="3" fill="#c62828"/>
+          <circle cx="110" cy="108" r="3" fill="#c62828"/>
+          <circle cx="122" cy="95"  r="3" fill="#c62828"/>
+          <circle cx="135" cy="115" r="3" fill="#c62828"/>
+          <circle cx="148" cy="105" r="3" fill="#c62828"/>
+          <circle cx="160" cy="130" r="3" fill="#c62828"/>
+          <circle cx="172" cy="120" r="3" fill="#c62828"/>
+          <circle cx="185" cy="135" r="3" fill="#c62828"/>
+          <circle cx="198" cy="128" r="3" fill="#c62828"/>
+          <circle cx="210" cy="130" r="3" fill="#c62828"/>
+        </svg>
+      </div>
+
+      <p>¿Qué tipo de correlación se aprecia?</p>
+      <div class="options">
+        <label><input type="radio" name="act4" value="a"> a) Positiva.</label>
+        <label><input type="radio" name="act4" value="b"> b) Negativa.</label>
+        <label><input type="radio" name="act4" value="c"> c) Nula.</label>
+        <label><input type="radio" name="act4" value="d"> d) No es interpretable.</label>
+      </div>
+      <div id="fb4" class="feedback"></div>
+    </section>
+
+    <!-- ACT 5 -->
+    <section class="card" id="act5">
+      <span class="pill">Definiciones</span>
+      <h2><span class="icon">🧾</span>Actividad 5 – Completar definiciones</h2>
+      <p>Completá las frases con las palabras apropiadas:</p>
+      <p>
+        1. El diagrama que representa los pares (x, y) se llama
+        <input type="text" id="act5_1" placeholder="...">.
+      </p>
+      <p>
+        2. La variable que se toma como causa o factor explicativo se llama
+        <input type="text" id="act5_2" placeholder="...">.
+      </p>
+      <p>
+        3. La variable que se quiere predecir se llama
+        <input type="text" id="act5_3" placeholder="...">.
+      </p>
+      <p>
+        4. La recta que mejor ajusta la tendencia de la nube de puntos se llama
+        <input type="text" id="act5_4" placeholder="...">.
+      </p>
+      <div id="fb5" class="feedback"></div>
+    </section>
+
+    <!-- ACT 6 -->
+    <section class="card" id="act6">
+      <span class="pill">Medidas descriptivas</span>
+      <h2><span class="icon">📐</span>Actividad 6 – Medias y centro de gravedad</h2>
+      <p>En un cultivo bacteriano se registran los datos:</p>
+      <p><strong>X (horas):</strong> 2, 4, 6</p>
+      <p><strong>Y (unidades):</strong> 30, 48, 69</p>
+      <p>Completa:</p>
+      <p>1. La media de X es: <input type="number" id="act6_1" step="0.1"> </p>
+      <p>2. La media de Y es: <input type="number" id="act6_2" step="0.1"> </p>
+      <p>3. El punto central es: ( <input type="number" id="act6_3x" step="0.1"> ,
+         <input type="number" id="act6_3y" step="0.1"> )</p>
+      <div id="fb6" class="feedback"></div>
+    </section>
+
+    <!-- ACT 7 -->
+    <section class="card" id="act7">
+      <span class="pill">Regresión lineal</span>
+      <h2><span class="icon">📈</span>Actividad 7 – ¿Qué recta utilizar?</h2>
+      <p>
+        En un estudio clínico se quiere estimar la
+        <strong>concentración en sangre (Y)</strong> a partir de la
+        <strong>dosis administrada (X)</strong>.
+      </p>
+      <p>¿Cuál recta de regresión corresponde usar?</p>
+      <div class="options">
+        <label><input type="radio" name="act7" value="a"> a) La recta de X sobre Y.</label>
+        <label><input type="radio" name="act7" value="b"> b) La recta de Y sobre X.</label>
+        <label><input type="radio" name="act7" value="c"> c) Cualquiera de las dos es equivalente.</label>
+        <label><input type="radio" name="act7" value="d"> d) No se usa regresión en este caso.</label>
+      </div>
+      <div id="fb7" class="feedback"></div>
+    </section>
+
+    <!-- ACT 8 -->
+    <section class="card" id="act8">
+      <span class="pill">Coeficiente de correlación</span>
+      <h2><span class="icon">📏</span>Actividad 8 – Interpretación del signo de r</h2>
+      <p>
+        En un estudio de medicina deportiva se midieron el
+        <strong>tiempo de entrenamiento semanal (X)</strong> y el
+        <strong>colesterol LDL (Y)</strong>. Se obtuvo un coeficiente
+        de correlación <strong>r = −0.62</strong>.
+      </p>
+      <p>¿Qué indica el signo negativo?</p>
+      <div class="options">
+        <label><input type="radio" name="act8" value="a"> a) Que las variables no tienen relación.</label>
+        <label><input type="radio" name="act8" value="b"> b) Que a mayor X, también aumenta Y.</label>
+        <label><input type="radio" name="act8" value="c"> c) Que a mayor X, Y tiende a disminuir.</label>
+        <label><input type="radio" name="act8" value="d"> d) Que la relación es perfecta.</label>
+      </div>
+      <div id="fb8" class="feedback"></div>
+    </section>
+
+    <!-- ACT 9 -->
+    <section class="card" id="act9">
+      <span class="pill">Predicciones</span>
+      <h2><span class="icon">🔮</span>Actividad 9 – Uso de la recta de regresión</h2>
+      <p>
+        En un estudio sobre respuesta inmune se obtuvo la recta de regresión:
+      </p>
+      <p style="text-align:center;">
+        <strong>Y = 2.5 X + 15</strong>
+      </p>
+      <p>
+        donde X = dosis de vacuna (en ml) y Y = nivel de anticuerpos
+        (en unidades arbitrarias).
+      </p>
+      <p>Completa:</p>
+      <p>1. Si X = 2 ml → Y = <input type="number" id="act9_1" step="0.1"> </p>
+      <p>2. Si X = 3 ml → Y = <input type="number" id="act9_2" step="0.1"> </p>
+      <div id="fb9" class="feedback"></div>
+    </section>
+
+    <!-- ACT 10 -->
+    <section class="card" id="act10">
+      <span class="pill">Medidas descriptivas</span>
+      <h2><span class="icon">📐</span>Actividad 10 – Desviación estándar </h2>
+      <p>Retomamos el mismo cultivo bacteriano de la Actividad 6:</p>
+      <p><strong>X (horas):</strong> 2, 4, 6</p>
+      <p><strong>Y (unidades):</strong> 30, 48, 69</p>
+      <p>
+        Elige, en cada caso, la <strong>desviación estándar poblacional</strong> correcta
+        (considerando estos datos como toda la población).
+      </p>
+      <p>
+        1. σ<sub>X</sub> =
+        <select id="act10_sx">
+          <option value="">Selecciona una opción</option>
+          <option value="1.00">1,00</option>
+          <option value="1.63">1,63</option><!-- correcta -->
+          <option value="2.00">2,00</option>
+          <option value="2.45">2,45</option>
+        </select>
+      </p>
+      <p>
+        2. σ<sub>Y</sub> =
+        <select id="act10_sy">
+          <option value="">Selecciona una opción</option>
+          <option value="10.50">10,50</option>
+          <option value="13.00">13,00</option>
+          <option value="15.94">15,94</option><!-- correcta -->
+          <option value="18.00">18,00</option>
+        </select>
+      </p>
+      <div id="fb10" class="feedback"></div>
+    </section>
+
+    <!-- ACT 11 -->
+    <section class="card" id="act11">
+      <span class="pill">Correlación lineal</span>
+      <h2><span class="icon">🧲</span>Actividad 11 – Covarianza y coeficiente de correlación</h2>
+      <p>
+        Para el mismo conjunto de datos de las actividades 6 y 10:
+      </p>
+      <p>
+        (2, 30), (4, 48), (6, 69)
+      </p>
+      <p>Seleccioná un valor y luego tocá (hacé click) en el lugar que corresponda:</p>
+
+      <div class="options" style="display:flex; flex-wrap:wrap; gap:8px;">
+        <!-- Valores tipo "covarianza" (varios grandes y positivos) -->
+        <div class="drag-item" draggable="true" data-value="26.00">26,00</div><!-- cov correcta -->
+        <div class="drag-item" draggable="true" data-value="24.00">24,00</div>
+        <div class="drag-item" draggable="true" data-value="30.00">30,00</div>
+        <div class="drag-item" draggable="true" data-value="-12.00">-12,00</div>
+
+        <!-- Valores tipo "r" (varios entre -1 y 1, algunos cercanos a 1) -->
+        <div class="drag-item" draggable="true" data-value="0.99">0,99</div><!-- r correcto (aprox) -->
+        <div class="drag-item" draggable="true" data-value="0.85">0,85</div>
+        <div class="drag-item" draggable="true" data-value="0.65">0,65</div>
+        <div class="drag-item" draggable="true" data-value="-0.90">-0,90</div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:18px; margin-top:10px;">
+        <div>
+          <p>Covarianza cov(X,Y):</p>
+          <div id="drop_cov" class="dropzone" data-value="">Arrastrá aquí</div>
+        </div>
+        <div>
+          <p>Coeficiente de correlación r:</p>
+          <div id="drop_r" class="dropzone" data-value="">Arrastrá aquí</div>
+        </div>
+      </div>
+
+      <div id="fb11" class="feedback"></div>
+    </section>
+
+    <!-- ACT 12 -->
+    <section class="card" id="act12">
+      <span class="pill">Regresión lineal</span>
+      <h2><span class="icon">📈</span>Actividad 12</h2>
+      <p>
+        Usando el mismo conjunto de datos de las actividades 6, 10 y 11:
+      </p>
+      <p>
+        (2, 30), (4, 48), (6, 69)
+      </p>
+      <p>
+        La relación entre X (horas) e Y (unidades) es aproximadamente lineal. 
+        ¿Cuál de las siguientes ecuaciones representa la
+        <strong>recta de regresión de Y sobre X</strong>?
+      </p>
+      <div class="options">
+        <label><input type="radio" name="act12" value="a"> a) Y = 9,75 X − 10</label>
+        <label><input type="radio" name="act12" value="b"> b) Y = 9,75 X + 10</label><!-- correcta -->
+        <label><input type="radio" name="act12" value="c"> c) Y = 10 X + 9</label>
+        <label><input type="radio" name="act12" value="d"> d) Y = −9,75 X + 70</label>
+      </div>
+      <div id="fb12" class="feedback"></div>
+    </section>
+
+    <!-- RESULTADO GLOBAL -->
+    <section class="card" style="text-align:center;">
+      <p>Hacé clic en el siguiente botón para calcular tu puntaje total y ver las devoluciones dentro de cada actividad.</p>
+
+      <div class="score-actions" style="justify-content:center;">
+        <button onclick="calcularPuntaje()">FINALIZAR</button>
+      </div>
+
+      <div id="score" class="feedback"></div>
+    </section>
+
+    <!-- Cierre -->
+    <section class="text" id="finalBlock">
+      <div id="finalScore" class="score-summary"></div>
+      <span id="finalPercent" class="score-percent"></span>
+
+      <p style="text-align:center; margin-top:18px;">
+        <strong>¡Felicitaciones por tus logros!</strong> 
+      </p>
+
+      <p style="text-align:center; font-style:italic; color:#555;">
+        🌟  Recuerda que un error es una oportunidad para aprender🌟
+      </p>
+
+      <p>
+        Contá con mi acompañamiento para seguir avanzando. Si algo no te quedó del todo claro o querés reforzar algún concepto,
+        escribí en el <strong>Foro de consultas didácticas</strong> y lo trabajamos junt@s. Cada intento es un paso en tu proceso de aprendizaje.
+      </p>
+
+      <p style="font-style:italic; color:#555;">
+        Nos seguimos leyendo en nuestro salón virtual :)
+      </p>
+    </section>
+  </main>
+
+<script>
+  function resetOptionBackground(groupName) {
+    const radios = document.querySelectorAll('input[name="' + groupName + '"]');
+    radios.forEach(r => {
+      const label = r.parentElement;
+      label.style.backgroundColor = '';
+    });
+  }
+
+  function checkMC(groupName, correctValue, feedbackId) {
+    const radios = document.querySelectorAll('input[name="' + groupName + '"]');
+    let selected = null;
+    resetOptionBackground(groupName);
+    radios.forEach(r => { if (r.checked) selected = r.value; });
+    const fb = document.getElementById(feedbackId);
+    if (!selected) {
+      fb.textContent = "Primero seleccioná una opción.";
+      fb.className = "feedback incorrect";
+      return;
+    }
+    let msgCorrect = "✔ Correcto.";
+    let msgIncorrect = "✘ Hay un error. Revisá tu respuesta.";
+
+    if (groupName === "act1") {
+      msgCorrect = "✔ Correcto. Es una distribución bidimensional: se observan dos variables en cada individuo.";
+      msgIncorrect = "✘ No es correcto. Al medir dos variables (X e Y) en cada sujeto hablamos de distribución bidimensional.";
+    } else if (groupName === "act2") {
+      msgCorrect = "✔ Correcto. La dosis es la variable independiente (X) y la concentración la dependiente (Y).";
+      msgIncorrect = "✘ Revisá: la dosis se fija y la concentración responde a esa dosis.";
+    } else if (groupName === "act3") {
+      msgCorrect = "✔ Correcto. La nube de puntos muestra que las variables aumentan conjuntamente.";
+      msgIncorrect = "✘ Observá que los puntos suben de izquierda a derecha: eso indica que al aumentar X, tiende a aumentar Y.";
+    } else if (groupName === "act4") {
+      msgCorrect = "✔ Correcto. La nube muestra correlación negativa: al aumentar X, Y tiende a disminuir.";
+      msgIncorrect = "✘ Observa que los puntos bajan de izquierda a derecha: eso indica que al aumentar X, Y tiende a disminuir.";
+    } else if (groupName === "act7") {
+      msgCorrect = "✔ Correcto. Para predecir Y a partir de X se usa la recta de Y sobre X.";
+      msgIncorrect = "✘ Recordá: la recta de Y sobre X se usa para estimar Y conociendo X.";
+    } else if (groupName === "act8") {
+      msgCorrect = "✔ Correcto. Un r negativo indica relación inversa: cuando X aumenta, Y tiende a disminuir.";
+      msgIncorrect = "✘ El signo de r indica el sentido de la relación: r < 0 implica relación inversa.";
+    } else if (groupName === "act12") {
+      msgCorrect = "✔ Correcto. Elegiste una recta creciente coherente con los datos observados.";
+      msgIncorrect = "✘ Revisá: la recta debe ser creciente y ajustarse a los puntos dados.";
+    }
+
+    const selectedRadio = Array.from(radios).find(r => r.value === selected);
+
+    if (selected === correctValue) {
+      if (selectedRadio) {
+        selectedRadio.parentElement.style.backgroundColor = '#c8f7c5';
+      }
+      fb.textContent = msgCorrect;
+      fb.className = "feedback correct";
+    } else {
+      if (selectedRadio) {
+        selectedRadio.parentElement.style.backgroundColor = '#f7c5c5';
+      }
+      fb.textContent = msgIncorrect;
+      fb.className = "feedback incorrect";
+    }
+  }
+
+  function checkAct5() {
+    const ids = ["act5_1", "act5_2", "act5_3", "act5_4"];
+    const vals = ids.map(id => document.getElementById(id).value.trim().toLowerCase());
+    const fb = document.getElementById("fb5");
+
+    const ok1 = (vals[0] === "nube de puntos" || vals[0] === "diagrama de dispersión" || vals[0] === "diagrama de dispersion");
+    const ok2 = (vals[1] === "independiente" || vals[1] === "variable independiente");
+    const ok3 = (vals[2] === "dependiente" || vals[2] === "variable dependiente");
+    const ok4 = (vals[3] === "recta de regresión" || vals[3] === "recta de regresion");
+
+    const oks = [ok1, ok2, ok3, ok4];
+
+    ids.forEach((id, i) => {
+      const input = document.getElementById(id);
+      input.style.backgroundColor = '';
+    });
+
+    ids.forEach((id, i) => {
+      const input = document.getElementById(id);
+      if (oks[i]) {
+        input.style.backgroundColor = '#c8f7c5';
+      } else if (vals[i] !== "") {
+        input.style.backgroundColor = '#f7c5c5';
+      }
+    });
+
+    const allCorrect = oks.every(x => x);
+    const anyCorrect = oks.some(x => x);
+
+    if (allCorrect) {
+      fb.textContent = "✔ Muy bien. Resumiste correctamente: nube de puntos, variable independiente, variable dependiente y recta de regresión.";
+      fb.className = "feedback correct";
+    } else if (anyCorrect) {
+      fb.textContent = "✔ Parcialmente correcto. Algunas respuestas son correctas, pero revisá las casillas en rojo para corregir los conceptos que faltan.";
+      fb.className = "feedback incorrect";
+    } else {
+      fb.textContent = "✘ Hay errores en todas las respuestas. Recordá: nube de puntos, variable independiente, variable dependiente y recta de regresión.";
+      fb.className = "feedback incorrect";
+    }
+  }
+
+  function checkAct6() {
+    const x = parseFloat(document.getElementById("act6_1").value);
+    const y = parseFloat(document.getElementById("act6_2").value);
+    const cx = parseFloat(document.getElementById("act6_3x").value);
+    const cy = parseFloat(document.getElementById("act6_3y").value);
+    const fb = document.getElementById("fb6");
+
+    const okx = !isNaN(x) && Math.abs(x - 4) < 0.01;
+    const oky = !isNaN(y) && Math.abs(y - 49) < 0.01;
+    const okcx = !isNaN(cx) && Math.abs(cx - 4) < 0.01;
+    const okcy = !isNaN(cy) && Math.abs(cy - 49) < 0.01;
+
+    const ids = ["act6_1", "act6_2", "act6_3x", "act6_3y"];
+    const oks = [okx, oky, okcx, okcy];
+
+    ids.forEach(id => {
+      document.getElementById(id).style.backgroundColor = '';
+    });
+
+    ids.forEach((id, idx) => {
+      const input = document.getElementById(id);
+      if (oks[idx]) {
+        input.style.backgroundColor = '#c8f7c5';
+      } else if (input.value !== "") {
+        input.style.backgroundColor = '#f7c5c5';
+      }
+    });
+
+    const allCorrect = oks.every(x => x);
+    const anyCorrect = oks.some(x => x);
+
+    if (allCorrect) {
+      fb.textContent = "✔ Correcto. La media de X es 4, la de Y es 49 y el punto central es (4, 49).";
+      fb.className = "feedback correct";
+    } else if (anyCorrect) {
+      fb.textContent = "✔ Parcialmente correcto. Algunas respuestas son correctas. Revisá las casillas en rojo para ajustar las medias o el punto central.";
+      fb.className = "feedback incorrect";
+    } else {
+      fb.textContent = "✘ Revisá los cálculos. Sumá los valores de cada variable y dividí entre el número de datos, luego formá el par (x̄, ȳ).";
+      fb.className = "feedback incorrect";
+    }
+  }
+
+  function checkAct9() {
+    const v1 = parseFloat(document.getElementById("act9_1").value);
+    const v2 = parseFloat(document.getElementById("act9_2").value);
+    const fb = document.getElementById("fb9");
+
+    const ok1 = !isNaN(v1) && Math.abs(v1 - 20) < 0.01;
+    const ok2 = !isNaN(v2) && Math.abs(v2 - 22.5) < 0.01;
+
+    const ids = ["act9_1", "act9_2"];
+    const oks = [ok1, ok2];
+
+    ids.forEach(id => {
+      document.getElementById(id).style.backgroundColor = '';
+    });
+
+    ids.forEach((id, idx) => {
+      const input = document.getElementById(id);
+      if (oks[idx]) {
+        input.style.backgroundColor = '#c8f7c5';
+      } else if (input.value !== "") {
+        input.style.backgroundColor = '#f7c5c5';
+      }
+    });
+
+    const allCorrect = oks.every(x => x);
+    const anyCorrect = oks.some(x => x);
+
+    if (allCorrect) {
+      fb.textContent = "✔ Muy bien. Aplicaste correctamente la ecuación de regresión para hacer predicciones.";
+      fb.className = "feedback correct";
+    } else if (anyCorrect) {
+      fb.textContent = "✔ Parcialmente correcto. Una de las predicciones es correcta. Revisá la casilla en rojo y sustituí de nuevo X en Y = 2.5X + 15.";
+      fb.className = "feedback incorrect";
+    } else {
+      fb.textContent = "✘ Hay errores en ambas respuestas. Recordá sustituir el valor de X en Y = 2.5X + 15 y hacer la cuenta con cuidado.";
+      fb.className = "feedback incorrect";
+    }
+  }
+
+  function checkAct10() {
+    const sx = document.getElementById("act10_sx");
+    const sy = document.getElementById("act10_sy");
+    const fb = document.getElementById("fb10");
+
+    sx.style.backgroundColor = "";
+    sy.style.backgroundColor = "";
+
+    const sxVal = sx.value;
+    const syVal = sy.value;
+
+    const okSx = sxVal === "1.63";
+    const okSy = syVal === "15.94";
+
+    if (sxVal) sx.style.backgroundColor = okSx ? '#c8f7c5' : '#f7c5c5';
+    if (syVal) sy.style.backgroundColor = okSy ? '#c8f7c5' : '#f7c5c5';
+
+    if (!sxVal || !syVal) {
+      fb.textContent = "✘ Completá ambas listas desplegables para verificar tu respuesta.";
+      fb.className = "feedback incorrect";
+    } else if (okSx && okSy) {
+      fb.textContent = "✔ Correcto. Calculaste correctamente las desviaciones estándar poblacionales de X e Y.";
+      fb.className = "feedback correct";
+    } else if (okSx || okSy) {
+      fb.textContent = "✔ Parcialmente correcto. Una de las desviaciones estándar es correcta. Revisá la otra.";
+      fb.className = "feedback incorrect";
+    } else {
+      fb.textContent = "✘ Hay errores en ambas desviaciones estándar. Revisá la fórmula poblacional y volvé a intentarlo.";
+      fb.className = "feedback incorrect";
+    }
+  }
+
+  function checkAct11() {
+    const covZone = document.getElementById("drop_cov");
+    const rZone   = document.getElementById("drop_r");
+    const fb      = document.getElementById("fb11");
+
+    const covVal = covZone.dataset.value || "";
+    const rVal   = rZone.dataset.value || "";
+
+    covZone.style.backgroundColor = "#fafafa";
+    rZone.style.backgroundColor   = "#fafafa";
+
+    const okCov = (covVal === "26.00");
+    const okR   = (rVal === "0.99");
+
+    if (covVal) covZone.style.backgroundColor = okCov ? '#c8f7c5' : '#f7c5c5';
+    if (rVal)   rZone.style.backgroundColor   = okR   ? '#c8f7c5' : '#f7c5c5';
+
+    if (!covVal && !rVal) {
+      fb.textContent = "✘ Primero arrastrá los valores a cada casillero.";
+      fb.className = "feedback incorrect";
+    } else if (okCov && okR) {
+      fb.textContent = "✔ Correcto. Identificaste adecuadamente la covarianza y el coeficiente de correlación lineal.";
+      fb.className = "feedback correct";
+    } else {
+      fb.textContent = "✔ Parcialmente correcto. Revisá qué valor corresponde a la covarianza y cuál a r.";
+      fb.className = "feedback incorrect";
+    }
+  }
+
+  function actividadesIncompletas() {
+    let vacias = 0;
+
+    ["act1","act2","act3","act4","act7","act8","act12"].forEach(name => {
+      const marcado = document.querySelector('input[name="'+name+'"]:checked');
+      if (!marcado) vacias++;
+    });
+
+    const idsObligatorios = ["act5_1","act5_2","act5_3","act5_4",
+                             "act6_1","act6_2","act6_3x","act6_3y",
+                             "act9_1","act9_2"];
+    idsObligatorios.forEach(id => {
+      const v = document.getElementById(id).value.trim();
+      if (v === "") vacias++;
+    });
+
+    if (document.getElementById("act10_sx").value === "") vacias++;
+    if (document.getElementById("act10_sy").value === "") vacias++;
+
+    if (!document.getElementById("drop_cov").dataset.value) vacias++;
+    if (!document.getElementById("drop_r").dataset.value) vacias++;
+
+    return vacias;
+  }
+
+  function calcularPuntaje() {
+    const incompletas = actividadesIncompletas();
+    if (incompletas > 0) {
+      if (!confirm("Tenés algunas actividades sin completar. ¿Querés calcular igual el puntaje?")) {
+        return;
+      }
+    }
+
+    checkMC('act1','b','fb1');
+    checkMC('act2','c','fb2');
+    checkMC('act3','b','fb3');
+    checkMC('act4','b','fb4');
+    checkAct5();
+    checkAct6();
+    checkMC('act7','b','fb7');
+    checkMC('act8','c','fb8');
+    checkAct9();
+    checkAct10();
+    checkAct11();
+    checkMC('act12','b','fb12');
+
+    let puntos = 0;
+    const maxPuntos = 12;
+
+    const a1 = document.querySelector('input[name="act1"]:checked');
+    if (a1 && a1.value === 'b') puntos += 1;
+
+    const a2 = document.querySelector('input[name="act2"]:checked');
+    if (a2 && a2.value === 'c') puntos += 1;
+
+    const a3 = document.querySelector('input[name="act3"]:checked');
+    if (a3 && a3.value === 'b') puntos += 1;
+
+    const a4 = document.querySelector('input[name="act4"]:checked');
+    if (a4 && a4.value === 'b') puntos += 1;
+
+    const v5_1 = document.getElementById("act5_1").value.trim().toLowerCase();
+    const v5_2 = document.getElementById("act5_2").value.trim().toLowerCase();
+    const v5_3 = document.getElementById("act5_3").value.trim().toLowerCase();
+    const v5_4 = document.getElementById("act5_4").value.trim().toLowerCase();
+
+    const a5_ok1 = (v5_1 === "nube de puntos" || v5_1 === "diagrama de dispersión" || v5_1 === "diagrama de dispersion");
+    const a5_ok2 = (v5_2 === "independiente" || v5_2 === "variable independiente");
+    const a5_ok3 = (v5_3 === "dependiente" || v5_3 === "variable dependiente");
+    const a5_ok4 = (v5_4 === "recta de regresión" || v5_4 === "recta de regresion");
+
+    const peso5 = 1 / 4;
+    if (a5_ok1) puntos += peso5;
+    if (a5_ok2) puntos += peso5;
+    if (a5_ok3) puntos += peso5;
+    if (a5_ok4) puntos += peso5;
+
+    const x  = parseFloat(document.getElementById("act6_1").value);
+    const y  = parseFloat(document.getElementById("act6_2").value);
+    const cx = parseFloat(document.getElementById("act6_3x").value);
+    const cy = parseFloat(document.getElementById("act6_3y").value);
+
+    const a6_okx  = !isNaN(x)  && Math.abs(x  - 4)  < 0.01;
+    const a6_oky  = !isNaN(y)  && Math.abs(y  - 49) < 0.01;
+    const a6_okcx = !isNaN(cx) && Math.abs(cx - 4)  < 0.01;
+    const a6_okcy = !isNaN(cy) && Math.abs(cy - 49) < 0.01;
+
+    const peso6 = 1 / 4;
+    if (a6_okx)  puntos += peso6;
+    if (a6_oky)  puntos += peso6;
+    if (a6_okcx) puntos += peso6;
+    if (a6_okcy) puntos += peso6;
+
+    const a7 = document.querySelector('input[name="act7"]:checked');
+    if (a7 && a7.value === 'b') puntos += 1;
+
+    const a8 = document.querySelector('input[name="act8"]:checked');
+    if (a8 && a8.value === 'c') puntos += 1;
+
+    const v9_1 = parseFloat(document.getElementById("act9_1").value);
+    const v9_2 = parseFloat(document.getElementById("act9_2").value);
+    const a9_ok1 = !isNaN(v9_1) && Math.abs(v9_1 - 20) < 0.01;
+    const a9_ok2 = !isNaN(v9_2) && Math.abs(v9_2 - 22.5) < 0.01;
+
+    const peso9 = 1 / 2;
+    if (a9_ok1) puntos += peso9;
+    if (a9_ok2) puntos += peso9;
+
+    const sxVal = document.getElementById("act10_sx").value;
+    const syVal = document.getElementById("act10_sy").value;
+
+    const peso10 = 1 / 2;
+    if (sxVal === "1.63")  puntos += peso10;
+    if (syVal === "15.94") puntos += peso10;
+
+    const covElem = document.getElementById("drop_cov");
+    const rElem   = document.getElementById("drop_r");
+    const covVal  = covElem ? covElem.dataset.value : "";
+    const rVal    = rElem ? rElem.dataset.value : "";
+
+    const peso11 = 1 / 2;
+    if (covVal === "26.00") puntos += peso11;
+    if (rVal   === "0.99")  puntos += peso11;
+
+    const a12 = document.querySelector('input[name="act12"]:checked');
+    if (a12 && a12.value === 'b') puntos += 1;
+
+    const scoreDiv = document.getElementById("score");
+    const porcentaje = Math.round((puntos / maxPuntos) * 100);
+    const puntos12   = puntos;
+
+    let mensajeExtra = "";
+    if (porcentaje === 100) {
+      mensajeExtra = "Excelente, dominás muy bien estos conceptos. 🎯";
+    } else if (porcentaje >= 70) {
+      mensajeExtra = "Muy buen trabajo, solo te queda afinar algunos detalles. 💪";
+    } else if (porcentaje >= 40) {
+      mensajeExtra = "Vas en buen camino. Te recomiendo revisar las actividades con errores y volver a intentarlo. 💪";
+    } else if (porcentaje >= 30)  {
+      mensajeExtra = "Es un buen primer intento. Volvé sobre las explicaciones y usá esta autoevaluación como práctica. 🌱";
+    } else {
+      mensajeExtra = "No te desanimes 🌱  Usá esta autoevaluación como práctica. ";
+    }
+
+    scoreDiv.innerHTML = `
+      <div style="text-align:center; margin-top:14px;">
+        <div style="font-size:1.25rem; font-weight:700; margin-bottom:4px;">
+          Puntaje: ${puntos12.toFixed(1)} / 12
+        </div>
+        <div style="font-size:1.1rem; font-weight:700; margin-bottom:8px;">
+          Precisión: ${porcentaje}%
+        </div>
+        <div style="font-weight:400; margin-bottom:10px;">
+          ${mensajeExtra}
+        </div>
+        <div style="font-weight:400; margin-bottom:10px;">
+          Mirá las retroalimentaciones en cada actividad para revisar tus respuestas y volvé a intentar.
+        </div>
+        <div style="margin-top:4px;">
+          <button onclick="resetAll()">Volver a intentar</button>
+        </div>
+      </div>
+    `;
+    scoreDiv.className = "feedback";
+
+    const finalBlock = document.getElementById("finalBlock");
+    if (finalBlock) {
+      finalBlock.style.display = "block";
+    }
+
+    scoreDiv.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function resetAll() {
+    document.querySelectorAll('input[type="radio"]').forEach(r => {
+      r.checked = false;
+      if (r.parentElement) {
+        r.parentElement.style.backgroundColor = '';
+      }
+    });
+
+    document.querySelectorAll('input[type="text"], input[type="number"]').forEach(inp => {
+      inp.value = '';
+      inp.style.backgroundColor = '';
+    });
+
+    document.querySelectorAll('select').forEach(sel => {
+      sel.selectedIndex = 0;
+      sel.style.backgroundColor = '';
+    });
+
+    document.querySelectorAll('.dropzone').forEach(z => {
+      z.textContent = "Arrastrá aquí";
+      z.dataset.value = "";
+      z.style.backgroundColor = "#fafafa";
+      z.classList.remove('filled');
+    });
+
+    document.querySelectorAll('.feedback').forEach(fb => {
+      fb.textContent = '';
+      fb.className = 'feedback';
+    });
+
+    const scoreDiv = document.getElementById("score");
+    if (scoreDiv) {
+      scoreDiv.textContent = '';
+    }
+
+    const finalBlock = document.getElementById("finalBlock");
+    if (finalBlock) {
+      finalBlock.style.display = "none";
+    }
+
+    document.querySelector('main').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('input[type="text"], input[type="number"]').forEach(inp => {
+      const reset = () => {
+        inp.style.backgroundColor = '';
+      };
+      inp.addEventListener('focus', reset);
+      inp.addEventListener('input', reset);
+    });
+
+    // Drag & drop actividad 11 (PC)
+    const draggables = document.querySelectorAll('.drag-item');
+    const dropzones = document.querySelectorAll('.dropzone');
+
+    draggables.forEach(item => {
+      item.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', item.dataset.value);
+        e.dataTransfer.setData('text/label', item.textContent);
+        item.classList.add('dragging');
+      });
+      item.addEventListener('dragend', () => {
+        item.classList.remove('dragging');
+      });
+    });
+
+    dropzones.forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+      });
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        const value = e.dataTransfer.getData('text/plain');
+        const label = e.dataTransfer.getData('text/label');
+        if (value) {
+          zone.textContent = label;
+          zone.dataset.value = value;
+          zone.classList.add('filled');
+        }
+      });
+    });
+
+    // 🔸 Fallback para CELULAR: tocar para elegir y tocar para colocar
+    let selectedDrag = null;
+
+    draggables.forEach(item => {
+      item.addEventListener('click', () => {
+        if (selectedDrag === item) {
+          item.classList.remove('selected');
+          selectedDrag = null;
+          return;
+        }
+        if (selectedDrag) {
+          selectedDrag.classList.remove('selected');
+        }
+        selectedDrag = item;
+        item.classList.add('selected');
+      });
+    });
+
+    dropzones.forEach(zone => {
+      zone.addEventListener('click', () => {
+        if (!selectedDrag) return;
+
+        const value = selectedDrag.dataset.value;
+        const label = selectedDrag.textContent;
+        if (value) {
+          zone.textContent = label;
+          zone.dataset.value = value;
+          zone.classList.add('filled');
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
